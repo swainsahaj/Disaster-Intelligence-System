@@ -3,7 +3,7 @@ const prisma = require('./src/lib/prisma');
 
 async function main() {
   const email = 'admin@example.com';
-  const password = 'admin123';
+  const password = 'admin123Ss@';
 
   const existingUser = await prisma.user.findUnique({
     where: { email }

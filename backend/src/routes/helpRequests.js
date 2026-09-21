@@ -84,21 +84,28 @@ router.patch('/help-requests/:id/status', protect, adminOnly, async (req, res) =
     });
   }
 
-  const helpRequest = await prisma.helpRequest.updateMany({
-    where: { id },
-    data: { status }
-  });
+  let helpRequest;
 
-  if (helpRequest.count === 0) {
-    return res.status(404).json({
-      success: false,
-      message: 'Help request not found'
+  try {
+    helpRequest = await prisma.helpRequest.update({
+      where: { id },
+      data: { status }
     });
+  } catch (error) {
+    if (error.code === 'P2025') {
+      return res.status(404).json({
+        success: false,
+        message: 'Help request not found'
+      });
+    }
+
+    throw error;
   }
 
   res.json({
     success: true,
-    message: 'Help request status updated'
+    message: 'Help request status updated',
+    data: helpRequest
   });
 });
 
